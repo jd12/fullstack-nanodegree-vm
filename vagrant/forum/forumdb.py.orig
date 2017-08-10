@@ -1,0 +1,78 @@
+# "Database code" for the DB Forum.
+
+<<<<<<< HEAD
+import time
+import psycopg2
+||||||| merged common ancestors
+import time
+=======
+import datetime
+>>>>>>> 68119afb6839145cd88211db59a149e67b03294a
+
+<<<<<<< HEAD
+## Database connection
+||||||| merged common ancestors
+## Database connection
+DB = []
+=======
+POSTS = [("This is the first post.", datetime.datetime.now())]
+>>>>>>> 68119afb6839145cd88211db59a149e67b03294a
+
+def get_posts():
+  """Return all posts from the 'database', most recent first."""
+  return reversed(POSTS)
+
+<<<<<<< HEAD
+    Returns:
+      A list of dictionaries, where each dictionary has a 'content' key
+      pointing to the post content, and 'time' key pointing to the time
+      it was posted.
+    '''
+    db = psycopg2.connect("dbname=forum")
+    cursor = db.cursor()
+    cursor.execute("select * from posts order by time DESC")
+    postsTable = cursor.fetchall()
+    posts = [{'content': str(row[1]), 'time': str(row[0])} for row in postsTable]
+#    posts.sort(key=lambda row: row['time'], reverse=True)
+    db.close()
+    return posts
+||||||| merged common ancestors
+    Returns:
+      A list of dictionaries, where each dictionary has a 'content' key
+      pointing to the post content, and 'time' key pointing to the time
+      it was posted.
+    '''
+    posts = [{'content': str(row[1]), 'time': str(row[0])} for row in DB]
+    posts.sort(key=lambda row: row['time'], reverse=True)
+    return posts
+=======
+def add_post(content):
+  """Add a post to the 'database' with the current timestamp."""
+  POSTS.append((content, datetime.datetime.now()))
+>>>>>>> 68119afb6839145cd88211db59a149e67b03294a
+
+
+<<<<<<< HEAD
+    Args:
+      content: The text content of the new post.
+    '''
+    db = psycopg2.connect("dbname=forum")
+    cursor = db.cursor()
+    #Grab current time
+    t = time.strftime('%c', time.localtime())
+    
+    #Insert content and time into database 
+    cursor.execute("insert into posts values (%s, %s) ", (content,t) )
+    
+    #Make change to database persistent 
+    db.commit()
+    db.close()
+    #db.append((t, content))
+||||||| merged common ancestors
+    Args:
+      content: The text content of the new post.
+    '''
+    t = time.strftime('%c', time.localtime())
+    DB.append((t, content))
+=======
+>>>>>>> 68119afb6839145cd88211db59a149e67b03294a
