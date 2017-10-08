@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
@@ -20,9 +20,11 @@ def restaurantMenu(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/new', methods = ['GET', 'POST'])
 def newMenuItem(restaurant_id):
     if request.method == 'POST':
-        newItem = MenuItem(name = request.form['name'], restaurant_id = restaurant_id)
+        newItem = MenuItem(name = request.form['name'], description=request.form['description'], price = request.form['price'], 
+                        restaurant_id = restaurant_id)
         session.add(newItem)
         session.commit()
+        flash("New Menu Item Created!")
         return redirect(url_for('restaurantMenu', restaurant_id = restaurant_id))
     else:
         return render_template('newMenuItem.html', restaurant_id = restaurant_id) 
@@ -35,6 +37,7 @@ def editMenuItem(restaurant_id, item_id):
             editedItem.name = request.form['name']
         session.add(editedItem)
         session.commit()
+        flash("Edited Menu Item!")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
         return render_template('editMenuItem.html', restaurant_id = restaurant_id, item_id = item_id, item = editedItem) 
@@ -45,10 +48,12 @@ def deleteMenuItem(restaurant_id, item_id):
     if request.method == 'POST':
         session.delete(item)
         session.commit()
+        flash("Deleted Menu Item!")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
         return render_template('deleteMenuItem.html', restaurant_id = restaurant_id, item_id = item_id, item = item) 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host = '0.0.0.0', port = 5000)
